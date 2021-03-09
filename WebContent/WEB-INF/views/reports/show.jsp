@@ -35,11 +35,22 @@
                                 <fmt:formatDate value="${report.updated_at}" pattern="yyyy-MM-dd HH:mm:ss" />
                             </td>
                         </tr>
+                        <tr>
+                            <th>いいね数</th>
+                            <td><c:out value="${report.like_count}" /></td>
+                        </tr>
                     </tbody>
                 </table>
 
                 <c:if test="${sessionScope.login_employee.id == report.employee.id}">
                     <p><a href="<c:url value="/reports/edit?id=${report.id}" />">この日報を編集する</a></p>
+                </c:if>
+                <!-- いいねリンクを追加 -->
+                <c:if test="${sessionScope.login_employee.id != report.employee.id}">
+                    <form method="POST" action="<c:url value='/likes/create' />">
+                        <button type="submit" name="like_count" value="${1}">いいね！</button>
+                        <!-- <p><a href="<c:url value="/likes/create" />">この日報にいいねする</a></p> -->
+                    </form>
                 </c:if>
             </c:when>
             <c:otherwise>
