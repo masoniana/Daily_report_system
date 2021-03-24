@@ -37,7 +37,14 @@
                         </tr>
                         <tr>
                             <th>いいね数</th>
-                            <td><c:out value="${report.like_count}" /></td>
+                            <c:choose>
+                                <c:when test="${report.like_count == 0}">
+                                    <td class="report_likes"><c:out value="${report.like_count}" /></td>
+                                </c:when>
+                                <c:otherwise>
+                                    <td class="report_likes"><a href="<c:url value='/likes/index?report_id=${report.id}' />"><c:out value="${report.like_count}" /></a></td>
+                                </c:otherwise>
+                            </c:choose>
                         </tr>
                     </tbody>
                 </table>
@@ -45,11 +52,11 @@
                 <c:if test="${sessionScope.login_employee.id == report.employee.id}">
                     <p><a href="<c:url value="/reports/edit?id=${report.id}" />">この日報を編集する</a></p>
                 </c:if>
-                <!-- いいねリンクを追加 -->
-                <c:if test="${sessionScope.login_employee.id != report.employee.id}">
+                <!-- いいねボタンを追加 -->
+                <c:if test="${like_check == 0 && sessionScope.login_employee.id != report.employee.id}">
                     <form method="POST" action="<c:url value='/likes/create' />">
+                        <input type="hidden" name="report_id" value="${report.id}">
                         <button type="submit" name="like_count" value="${1}">いいね！</button>
-                        <!-- <p><a href="<c:url value="/likes/create" />">この日報にいいねする</a></p> -->
                     </form>
                 </c:if>
             </c:when>
