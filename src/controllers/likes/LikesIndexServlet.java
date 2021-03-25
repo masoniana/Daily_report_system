@@ -34,6 +34,7 @@ public class LikesIndexServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
+
         Report r = em.find(Report.class, Integer.parseInt(request.getParameter("report_id")));
 
         int page;
@@ -49,7 +50,7 @@ public class LikesIndexServlet extends HttpServlet {
                 .setMaxResults(10)
                 .getResultList();
 
-        long likes_count = (long) em.createNamedQuery("getMyLikesCount", Long.class)
+        long likes_count = (long) em.createNamedQuery("getMyAllLikesCount", Long.class)
                 .setParameter("report", r)
                 .getSingleResult();
 
