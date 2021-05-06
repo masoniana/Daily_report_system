@@ -13,24 +13,31 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@Table(name = "likes")
+@Table(name = "follows")
 @NamedQueries({
     @NamedQuery(
-        name = "getMyAllLikesCount",
-        query = "SELECT COUNT(l) FROM Like AS l WHERE l.report = :report"
+        name = "getMyFollowAllReports",
+        query = "SELECT r FROM Report AS r, Follow AS f WHERE f.employee = :employee AND r.employee.id = f.follow.id ORDER BY r.id DESC"
     ),
     @NamedQuery(
-        name = "getMyLikesCount",
-        query = "SELECT COUNT(l) FROM Like AS l WHERE l.report = :report AND l.employee = :employee"
+        name = "getMyFollowReportsCount",
+        query = "SELECT COUNT(r) FROM Report AS r, Follow AS f WHERE f.employee = :employee AND r.employee.id = f.follow.id"
     ),
     @NamedQuery(
-        name = "getMyAllLikes",
-        query = "SELECT l FROM Like AS l WHERE l.report = :report ORDER BY l.created_at DESC"
+        name = "getMyAllFollowing",
+        query = "SELECT f FROM Employee AS e, Follow AS f WHERE f.employee = :employee AND e.id = f.follow.id ORDER BY f.id DESC"
+    ),
+    @NamedQuery(
+        name = "getMyFollowingCount",
+        query = "SELECT COUNT(f) FROM Employee AS e, Follow AS f WHERE f.employee = :employee AND e.id = f.follow.id"
+    ),
+    @NamedQuery(
+            name = "checkFollowsEmployees",
+            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.employee = :employee AND f.follow = :follow_employee"
     ),
 })
-
 @Entity
-public class Like {
+public class Follow {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +48,8 @@ public class Like {
     private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "report_id", nullable = false)
-    private Report report;
+    @JoinColumn(name = "follow_id", nullable = false)
+    private Employee follow;
 
     @Column(name = "created_at", nullable = false)
     private Timestamp created_at;
@@ -66,12 +73,12 @@ public class Like {
         this.employee = employee;
     }
 
-    public Report getReport() {
-        return report;
+    public Employee getFollow() {
+        return follow;
     }
 
-    public void setReport(Report report) {
-        this.report = report;
+    public void setFollow(Employee follow) {
+        this.follow = follow;
     }
 
     public Timestamp getCreated_at() {
